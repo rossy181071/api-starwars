@@ -1,22 +1,16 @@
 import { LitElement, css, html } from 'lit'
-import litLogo from './assets/lit.svg'
-import viteLogo from '/vite.svg'
-
+import { Child2Element } from './child-2-element'
+import { CharacterGetterElement2 } from './character-getter-element-2'
 /**
  * An example element.
  *
- * @slot - This element has a slot
+ * @slot - This element has a slot    
  * @csspart button - The button
  */
 export class MyElement extends LitElement {
   static get properties() {
     return {
-      /**
-       * Copy for the read the docs hint.
-       */
-      docsHint: { type: String },
-
-      /**
+        /**
        * The number of times the button has been clicked.
        */
       count: { type: Number },
@@ -25,34 +19,40 @@ export class MyElement extends LitElement {
 
   constructor() {
     super()
-    this.docsHint = 'Click on the Vite and Lit logos to learn more'
     this.count = 0
   }
 
+  myEvent2Handler() {
+   this.count ++ 
+  }
+
+  newCharacterEventHandler (e) {
+    const character = e.detail
+    const characterNema = character.Nema
+    const characterImg= character.image
+
+
+    this.shadowRoot.querySelector("#character-name").innerHTML = characterName
+    this.shadowRoot.querySelector("#character-img").src = characterImg
+
+  }
+
   render() {
-    return html`
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src=${viteLogo} class="logo" alt="Vite logo" />
-        </a>
-        <a href="https://lit.dev" target="_blank">
-          <img src=${litLogo} class="logo lit" alt="Lit logo" />
-        </a>
-      </div>
-      <slot></slot>
+    return html`      
       <div class="card">
-        <button @click=${this._onClick} part="button">
+        <h1>
           count is ${this.count}
-        </button>
+      </h1> 
+       <child-2-element @my-event-2="${this.myEvent2Handler}"></child-2-element> 
+       <character-getter-element-2 @new-character-event="${this.newCharacterEventHandler}"></character-getter-element-2>  
+      <h1 id="character-name"></h1>
+      <img id= "character-img">
       </div>
-      <p class="read-the-docs">${this.docsHint}</p>
+      
     `
   }
 
-  _onClick() {
-    this.count++
-  }
-
+  
   static get styles() {
     return css`
       :host {
@@ -123,6 +123,9 @@ export class MyElement extends LitElement {
         button {
           background-color: #f9f9f9;
         }
+      }
+      img {
+        width: 50vw;
       }
     `
   }
