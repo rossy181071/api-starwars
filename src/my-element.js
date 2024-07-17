@@ -10,45 +10,94 @@ import { CharacterGetterElement2 } from './character-getter-element-2'
 export class MyElement extends LitElement {
   static get properties() {
     return {
-        /**
-       * The number of times the button has been clicked.
-       */
-      count: { type: Number },
-    }
+    /**
+   * The number of times the button has been clicked.
+   */
+   count: { type: Number },
+   /**
+   * The current characters page number
+     */ 
+  page: { type: Number } ,
+  /**
+   * The list of characters as an array
+   */
+  characters: { type: Array} ,
+  
   }
+
+}
 
   constructor() {
     super()
     this.count = 0
+    this.page = 1
+    this.characters = []
   }
 
   myEvent2Handler() {
    this.count ++ 
   }
 
-  newCharacterEventHandler (e) {
-    const character = e.detail
-    const characterNema = character.Nema
-    const characterImg= character.image
-
-
-    this.shadowRoot.querySelector("#character-name").innerHTML = characterName
-    this.shadowRoot.querySelector("#character-img").src = characterImg
+  update(changedProperties) {
+    if (changedProperties.has("page"))
+      this.shadowRoot.querySelector("character-getter-element-2").getCharactersPage (this.page)
 
   }
+
+  newCharactersPageEventHandler (e) {
+    this.characters = e.detail.data
+  }
+
+  firstPage () {
+    this.page = 1
+  }
+  
+  previousPage () {
+    if (this.page > 1)
+    this.page-- 
+  else
+  this.page = 97
+  }
+
+  nextPage () {
+    if (this.page < 97)
+      this.page++
+    else
+    this.page = 1
+  }
+  lastPage() {
+    this.page = 97
+  }
+     
+  
 
   render() {
     return html`      
       <div class="card">
         <h1>
           count is ${this.count}
-      </h1> 
-       <child-2-element @my-event-2="${this.myEvent2Handler}"></child-2-element> 
-       <character-getter-element-2 @new-character-event="${this.newCharacterEventHandler}"></character-getter-element-2>  
+      </h1>
+      <h1>
+        Pagina ${this.page}
+      </h1>
+      <button @click="${this.firstPage}">Inicio</button> 
+      <button @click="${this.previousPage}">Anterior</button> 
+      <button @click="${this.nextPage}">Siguiente</button> 
+      <button @click="${this.lastPage}">Final</button> 
+      <child-2-element @my-event-2="${this.myEvent2Handler}"></child-2-element> 
+      <character-getter-element-2 @new-character-event="${this.
+        newCharactersPageEventHandler}"></character-getter-element-2>  
       <h1 id="character-name"></h1>
       <img id= "character-img">
+      <div id="characters-list">
+        ${this.characters.length < 1 ? '' : this.characters.map(char => html`<div 
+          class="character" id="${char._id}">
+      <h1>${char.name}</h1>
+      <p>${char.descrption}</p>
+      <img src="${char.image}">
+        </div>`) }
       </div>
-      
+      </div>
     `
   }
 
